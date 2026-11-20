@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEAR COIN</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#100e09;color:#f5d477;
+ font-family:Arial,sans-serif;text-align:center;
+}
+header{padding:22px;font-size:27px;font-weight:bold}
+.balance{font-size:38px;font-weight:bold;margin:18px}
+.coin{color:#fff0ad;font-size:15px}
+.bear{
+ font-size:145px;cursor:pointer;
+ display:inline-block;margin:35px 0;
+ user-select:none;transition:.08s;
+ filter:drop-shadow(0 0 20px #d49a24);
+}
+.bear:active{transform:scale(.91)}
+.energy{font-size:17px;margin:15px}
+.bar{width:80%;height:12px;background:#42351b;
+ margin:10px auto;border-radius:20px;overflow:hidden}
+.fill{height:100%;background:#edbd48;width:100%}
+nav{display:flex;justify-content:space-around;
+ position:fixed;bottom:0;width:100%;
+ background:#211b10;padding:16px 3px}
+button{background:#b98928;color:#171006;
+ border:0;padding:12px;border-radius:12px;font-weight:bold}
+nav button{background:transparent;color:#f5d477}
+main{padding-bottom:100px}
+</style>
+</head>
+<body>
+<header>🐻 BEAR COIN</header>
+<main>
+<div class="coin">YOUR BALANCE</div>
+<div class="balance" id="balance">0 🪙</div>
+<div class="bear" onclick="tap()">🐻</div>
+<div class="energy">⚡ ENERGY: <span id="energy">1000</span>/1000</div>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<button onclick="upgrade()">🚀 UPGRADE (<span id="price">100</span>)</button>
+<p>LEVEL: <span id="level">1</span></p>
+</main>
+<nav>
+<button onclick="show('Game')">🐻 Game</button>
+<button onclick="show('Earn')">🎁 Earn</button>
+<button onclick="show('Friends')">👥 Friends</button>
+<button onclick="show('Rating')">🏆 Rating</button>
+</nav>
+<script>
+const tg=window.Telegram?.WebApp;
+tg?.ready();
+tg?.expand();
+
+let balance=Number(localStorage.getItem('bc')||0);
+let energy=1000;
+let level=1;
+let price=100;
+
+function save(){
+ localStorage.setItem('bc',balance);
+}
+function tap(){
+ if(energy<=0)return;
+ balance+=level;
+ energy--;
+ save();
+ update();
+}
+function upgrade(){
+ if(balance<price){
+ alert('Coins yetarli emas!');
+ return;
+ }
+ balance-=price;
+ level++;
+ price=Math.floor(price*1.7);
+ save();
+ update();
+}
+function update(){
+ document.getElementById('balance').textContent=balance+' 🪙';
+ document.getElementById('energy').textContent=energy;
+ document.getElementById('level').textContent=level;
+ document.getElementById('price').textContent=price;
+ document.getElementById('fill').style.width=(energy/10)+'%';
+}
+function show(page){
+ alert(page);
+}
+setInterval(()=>{
+ if(energy<1000){
+ energy=Math.min(1000,energy+5);
+ update();
+ }
+},1000);
+update();
+</script>
+</body>
+</html>
